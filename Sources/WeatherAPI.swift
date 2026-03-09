@@ -2,7 +2,7 @@ import Foundation
 import os
 
 public protocol WeatherAPIProtocol: Sendable {
-    func fetchPoints(for coordinate: Coordinate) async throws -> PointsResponse
+    func fetchGrid(for coordinate: Coordinate) async throws -> GridResponse
     func fetchForecast(for coordinate: Coordinate) async throws -> ForecastResponse
     func fetchHourlyForecast(for coordinate: Coordinate) async throws -> ForecastResponse
     func fetchAlerts(for coordinate: Coordinate) async throws -> AlertsResponse
@@ -26,23 +26,23 @@ public struct WeatherAPI: WeatherAPIProtocol {
 
     // MARK: - Public
 
-    public func fetchPoints(for coordinate: Coordinate) async throws -> PointsResponse {
+    public func fetchGrid(for coordinate: Coordinate) async throws -> GridResponse {
         var components = baseComponents
         components.path = "/points/\(coordinate.latitude),\(coordinate.longitude)"
         return try await fetch(components: components)
     }
 
     public func fetchForecast(for coordinate: Coordinate) async throws -> ForecastResponse {
-        let points = try await fetchPoints(for: coordinate)
-        let p = points.properties
+        let grid = try await fetchGrid(for: coordinate)
+        let p = grid.properties
         var components = baseComponents
         components.path = "/gridpoints/\(p.gridId)/\(p.gridX),\(p.gridY)/forecast"
         return try await fetch(components: components)
     }
 
     public func fetchHourlyForecast(for coordinate: Coordinate) async throws -> ForecastResponse {
-        let points = try await fetchPoints(for: coordinate)
-        let p = points.properties
+        let grid = try await fetchGrid(for: coordinate)
+        let p = grid.properties
         var components = baseComponents
         components.path = "/gridpoints/\(p.gridId)/\(p.gridX),\(p.gridY)/forecast/hourly"
         return try await fetch(components: components)

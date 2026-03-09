@@ -7,9 +7,9 @@ struct WeatherAPIProtocolTests {
 
     private static let sampleCoordinate = Coordinate(latitude: 39.7456, longitude: -97.0892)
 
-    private static var samplePoints: PointsResponse {
+    private static var sampleGrid: GridResponse {
         get throws {
-            try JSONDecoder().decode(PointsResponse.self, from: Data(SampleJSON.points.utf8))
+            try JSONDecoder().decode(GridResponse.self, from: Data(SampleJSON.points.utf8))
         }
     }
 
@@ -27,11 +27,11 @@ struct WeatherAPIProtocolTests {
 
     // MARK: - Success
 
-    @Test func fetchPointsReturnsConfiguredResult() async throws {
+    @Test func fetchGridReturnsConfiguredResult() async throws {
         var mock = MockWeatherAPI()
-        let expected = try Self.samplePoints
-        mock.pointsResult = .success(expected)
-        let result = try await mock.fetchPoints(for: Self.sampleCoordinate)
+        let expected = try Self.sampleGrid
+        mock.gridResult = .success(expected)
+        let result = try await mock.fetchGrid(for: Self.sampleCoordinate)
         #expect(result == expected)
     }
 
@@ -53,10 +53,10 @@ struct WeatherAPIProtocolTests {
 
     // MARK: - Errors
 
-    @Test func fetchPointsThrowsOnError() async {
+    @Test func fetchGridThrowsOnError() async {
         let mock = MockWeatherAPI()
         await #expect(throws: WeatherError.self) {
-            try await mock.fetchPoints(for: Self.sampleCoordinate)
+            try await mock.fetchGrid(for: Self.sampleCoordinate)
         }
     }
 

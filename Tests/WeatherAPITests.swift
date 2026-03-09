@@ -42,37 +42,37 @@ struct WeatherAPITests {
         HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
     }
 
-    // MARK: - fetchPoints
+    // MARK: - fetchGrid
 
-    @Test func fetchPointsSuccess() async throws {
+    @Test func fetchGridSuccess() async throws {
         MockURLProtocol.requestHandler = { request in
             (ok(for: request), Data(SampleJSON.points.utf8))
         }
 
-        let result = try await makeAPI().fetchPoints(for: coordinate)
+        let result = try await makeAPI().fetchGrid(for: coordinate)
         #expect(result.properties.gridId == "TOP")
         #expect(result.properties.gridX == 32)
         #expect(result.properties.gridY == 81)
     }
 
-    @Test func fetchPointsHTTPError() async {
+    @Test func fetchGridHTTPError() async {
         MockURLProtocol.requestHandler = { request in
             let response = HTTPURLResponse(url: request.url!, statusCode: 500, httpVersion: nil, headerFields: nil)!
             return (response, Data())
         }
 
         await #expect(throws: WeatherError.httpError(statusCode: 500)) {
-            try await makeAPI().fetchPoints(for: coordinate)
+            try await makeAPI().fetchGrid(for: coordinate)
         }
     }
 
-    @Test func fetchPointsDecodingError() async {
+    @Test func fetchGridDecodingError() async {
         MockURLProtocol.requestHandler = { request in
             (ok(for: request), Data("not json".utf8))
         }
 
         await #expect(throws: WeatherError.decodingFailed) {
-            try await makeAPI().fetchPoints(for: coordinate)
+            try await makeAPI().fetchGrid(for: coordinate)
         }
     }
 
@@ -134,6 +134,6 @@ struct WeatherAPITests {
             return (ok(for: request), Data(SampleJSON.points.utf8))
         }
 
-        _ = try await makeAPI().fetchPoints(for: coordinate)
+        _ = try await makeAPI().fetchGrid(for: coordinate)
     }
 }

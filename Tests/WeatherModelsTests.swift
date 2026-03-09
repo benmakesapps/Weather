@@ -7,9 +7,9 @@ struct WeatherModelsTests {
 
     // MARK: - Points
 
-    @Test func decodesPointsResponse() throws {
+    @Test func decodesGridResponse() throws {
         let data = Data(SampleJSON.points.utf8)
-        let response = try JSONDecoder().decode(PointsResponse.self, from: data)
+        let response = try JSONDecoder().decode(GridResponse.self, from: data)
         #expect(response.properties.gridId == "TOP")
         #expect(response.properties.gridX == 32)
         #expect(response.properties.gridY == 81)
